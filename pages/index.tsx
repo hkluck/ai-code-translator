@@ -5,7 +5,7 @@ import { ModelSelect } from '@/components/ModelSelect';
 import { TextBlock } from '@/components/TextBlock';
 import { OpenAIModel, TranslateBody } from '@/types/types';
 import Head from 'next/head';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [inputLanguage, setInputLanguage] = useState<string>('JavaScript');
@@ -17,7 +17,7 @@ export default function Home() {
   const [hasTranslated, setHasTranslated] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
 
-  const handleTranslate = useCallback(async) => {
+  const handleTranslate = async () => {
     const maxCodeLength = model === 'gpt-3.5-turbo' ? 6000 : 12000;
 
     if (!apiKey) {
@@ -117,7 +117,7 @@ export default function Home() {
     if (hasTranslated) {
       handleTranslate();
     }
-  }, [outputLanguage, handleTranslate, hasTranslated]);
+  }, [outputLanguage]);
 
   useEffect(() => {
     const apiKey = localStorage.getItem('apiKey');
