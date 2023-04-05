@@ -96,7 +96,7 @@ export default function Home() {
     setLoading(false);
     setHasTranslated(true);
     copyToClipboard(code);
-  };[inputLanguage, outputLanguage, inputCode, model, apiKey]);
+  };
 
   const copyToClipboard = (text: string) => {
     const el = document.createElement('textarea');
@@ -117,7 +117,7 @@ export default function Home() {
     if (hasTranslated) {
       handleTranslate();
     }
-  }, [outputLanguage, handleTranslate, hasTranslated]);
+  },[inputLanguage, outputLanguage, inputCode, model, apiKey]);
 
   useEffect(() => {
     const apiKey = localStorage.getItem('apiKey');
