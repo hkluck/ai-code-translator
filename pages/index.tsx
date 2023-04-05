@@ -42,8 +42,6 @@ export default function Home() {
       return;
     }
 
-    setLoading(true);
-    setOutputCode('');
 
     const controller = new AbortController();
 
@@ -93,10 +91,7 @@ export default function Home() {
       setOutputCode((prevCode) => prevCode + chunkValue);
     }
 
-    setLoading(false);
-    setHasTranslated(true);
-    copyToClipboard(code);
-  }, [inputLanguage, outputLanguage, inputCode, model, apiKey]);
+
 
   const copyToClipboard = (text: string) => {
     const el = document.createElement('textarea');
@@ -112,6 +107,10 @@ export default function Home() {
 
     localStorage.setItem('apiKey', value);
   };
+    setLoading(false);
+    setHasTranslated(true);
+    copyToClipboard(code);
+  }, [inputLanguage, outputLanguage, inputCode, model, apiKey]);
 
   useEffect(() => {
     if (hasTranslated) {
