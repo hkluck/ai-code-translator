@@ -5,7 +5,7 @@ import { ModelSelect } from '@/components/ModelSelect';
 import { TextBlock } from '@/components/TextBlock';
 import { OpenAIModel, TranslateBody } from '@/types/types';
 import Head from 'next/head';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [inputLanguage, setInputLanguage] = useState<string>('JavaScript');
@@ -17,7 +17,7 @@ export default function Home() {
   const [hasTranslated, setHasTranslated] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
 
-const handleTranslate = useCallback(async () => {
+  const handleTranslate = async () => {
     const maxCodeLength = model === 'gpt-3.5-turbo' ? 6000 : 12000;
 
     if (!apiKey) {
@@ -42,6 +42,8 @@ const handleTranslate = useCallback(async () => {
       return;
     }
 
+    setLoading(true);
+    setOutputCode('');
 
     const controller = new AbortController();
 
@@ -91,7 +93,10 @@ const handleTranslate = useCallback(async () => {
       setOutputCode((prevCode) => prevCode + chunkValue);
     }
 
-
+    setLoading(false);
+    setHasTranslated(true);
+    copyToClipboard(code);
+  };
 
   const copyToClipboard = (text: string) => {
     const el = document.createElement('textarea');
@@ -107,23 +112,13 @@ const handleTranslate = useCallback(async () => {
 
     localStorage.setItem('apiKey', value);
   };
-    setLoading(false);
-    setHasTranslated(true);
-    copyToClipboard(code);
-  }, [inputLanguage, outputLanguage, inputCode, model, apiKey]);
-  
-    const handleTranslateRef = useRef(handleTranslate);
-  useEffect(() => {
-    handleTranslateRef.current = handleTranslate;
-  }, [handleTranslate]);
 
   useEffect(() => {
     if (hasTranslated) {
-      setHasTranslated(false);
-      handleTranslateRef.current();
+      handleTranslate();
     }
-  }, [outputLanguage, hasTranslated]);
-  
+  }, [outputLanguage]);
+
   useEffect(() => {
     const apiKey = localStorage.getItem('apiKey');
 
