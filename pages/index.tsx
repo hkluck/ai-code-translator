@@ -17,7 +17,24 @@ export default function Home() {
   const [hasTranslated, setHasTranslated] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
 
-  const handleTranslate = useCallback(async () => {
+  const copyToClipboard = (text: string) => {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  };
+
+  const handleApiKeyChange = (value: string) => {
+    setApiKey(value);
+
+    localStorage.setItem('apiKey', value);
+  };
+
+  useEffect(() => {
+    if (hasTranslated) {
+  const handleTranslate = async () => {
     const maxCodeLength = model === 'gpt-3.5-turbo' ? 6000 : 12000;
 
     if (!apiKey) {
@@ -97,27 +114,9 @@ export default function Home() {
     setHasTranslated(true);
     copyToClipboard(code);
   };
-
-  const copyToClipboard = (text: string) => {
-    const el = document.createElement('textarea');
-    el.value = text;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-  };
-
-  const handleApiKeyChange = (value: string) => {
-    setApiKey(value);
-
-    localStorage.setItem('apiKey', value);
-  };
-
-  useEffect(() => {
-    if (hasTranslated) {
       handleTranslate();
     }
-  },[inputLanguage, outputLanguage, inputCode, model, apiKey]);
+  }, [outputLanguage, hasTranslated, inputLanguage, inputCode, model, apiKey]);
 
   useEffect(() => {
     const apiKey = localStorage.getItem('apiKey');
